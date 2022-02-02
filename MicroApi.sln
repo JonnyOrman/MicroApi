@@ -37,9 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroApi.Delete.Testing.Uni
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroApi.Core.Testing.UnitTests", "Core\MicroApi.Core.Testing.UnitTests\MicroApi.Core.Testing.UnitTests.csproj", "{48606422-463A-48C3-9F39-F030B69E0EC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroApi.Delete.Example", "MicroApi.Delete.Example\MicroApi.Delete.Example.csproj", "{7F4B958B-BB1C-4859-B6ED-2E80E2C2ABB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroApi.Delete.Example", "Delete\MicroApi.Delete.Example\MicroApi.Delete.Example.csproj", "{7F4B958B-BB1C-4859-B6ED-2E80E2C2ABB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroApi.Update.Example", "MicroApi.Update.Example\MicroApi.Update.Example.csproj", "{757DA353-4A37-45BA-A2DF-862538BF48D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroApi.Update.Example", "Update\MicroApi.Update.Example\MicroApi.Update.Example.csproj", "{757DA353-4A37-45BA-A2DF-862538BF48D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
