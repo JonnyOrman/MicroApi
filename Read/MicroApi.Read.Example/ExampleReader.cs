@@ -8,9 +8,9 @@ public class ExampleReader : IReader<ExampleEntity, int, ExampleQuery>
     {
         _entities = new List<ExampleEntity>
         {
-            new ExampleEntity(1),
-            new ExampleEntity(2),
-            new ExampleEntity(3)
+            new ExampleEntity(1, "entity1", "a"),
+            new ExampleEntity(2, "entity2", "b"),
+            new ExampleEntity(3, "entity3", "a")
         };
     }
 
@@ -21,6 +21,6 @@ public class ExampleReader : IReader<ExampleEntity, int, ExampleQuery>
 
     public async Task<IEnumerable<ExampleEntity>> ReadManyAsync(ExampleQuery query)
     {
-        return new List<ExampleEntity>();
+        return _entities.Where(entity => entity.Type == query.Type);
     }
 }
