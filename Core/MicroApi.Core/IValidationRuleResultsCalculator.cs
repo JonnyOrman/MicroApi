@@ -2,5 +2,5 @@
 
 public interface IValidationRuleResultsCalculator<T>
 {
-    IEnumerable<ValidationRuleResult> Calculate(T entity);
+    IEnumerable<ValidationRuleResult> Calculate(T value);
 }

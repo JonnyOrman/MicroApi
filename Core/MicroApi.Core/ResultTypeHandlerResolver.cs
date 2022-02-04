@@ -11,9 +11,9 @@ public class ResultTypeHandlerResolver<T> : IResultTypeHandlerResolver<T>
         _handlerRegistrations = handlerRegistrations;
     }
 
-    public IResultTypeHandler<T> Resolve(Result<T> Result)
+    public IResultTypeHandler<T> Resolve(Result<T> result)
     {
-        var matchingHandlerRegistrations = _handlerRegistrations.Where(x => x.IsMatch(Result));
+        var matchingHandlerRegistrations = _handlerRegistrations.Where(x => x.IsMatch(result));
 
         if (matchingHandlerRegistrations.Count() == 0)
         {

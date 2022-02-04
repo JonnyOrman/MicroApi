@@ -1,20 +1,20 @@
 ﻿namespace MicroApi.Core;
 
-public class ValidationParametersProcessor<T, TKey> : IParametersProcessor<T, TKey>
+public class ValidationParametersProcessor<T, TParameters> : IParametersProcessor<T, TParameters>
 {
-    private readonly IValidator<TKey> _parametersValidator;
-    private readonly IParametersValidationResultHandler<T, TKey> _parametersValidationResultHandler;
+    private readonly IValidator<TParameters> _parametersValidator;
+    private readonly IParametersValidationResultHandler<T, TParameters> _parametersValidationResultHandler;
 
     public ValidationParametersProcessor(
-        IValidator<TKey> parametersValidator,
-        IParametersValidationResultHandler<T, TKey> parametersValidationResultHandler
+        IValidator<TParameters> parametersValidator,
+        IParametersValidationResultHandler<T, TParameters> parametersValidationResultHandler
         )
     {
         _parametersValidator = parametersValidator;
         _parametersValidationResultHandler = parametersValidationResultHandler;
     }
 
-    public async Task<Result<T>> ProcessAsync(TKey key)
+    public async Task<Result<T>> ProcessAsync(TParameters key)
     {
         var validationResult = _parametersValidator.Validate(key);
 
