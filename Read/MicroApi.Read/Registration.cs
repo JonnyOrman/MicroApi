@@ -52,6 +52,8 @@ public static class Registration
         serviceCollection.AddSingleton<IGetSingleRequestHandler<TKey>, GetSingleRequestHandler<T, TKey>>();
         serviceCollection.AddSingleton<IGetManyRequestHandler<TQuery>, GetManyRequestHandler<T, TQuery>>();
 
+        serviceCollection.AddSingleton<IValidationResultBuilderCreator, ValidationResultBuilderCreator>();
+
         return serviceCollection;
     }
 }

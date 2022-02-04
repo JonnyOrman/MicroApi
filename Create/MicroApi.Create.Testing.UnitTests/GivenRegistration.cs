@@ -17,7 +17,7 @@ public class GivenRegistration
 
             serviceCollection.AddCreate<TestEntity, string, TestParameters, TestCreator>();
 
-            Assert.Equal(10, serviceCollection.Count);
+            Assert.Equal(11, serviceCollection.Count);
 
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IResultTypeHandlerRegistration<TestEntity>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IResultTypeHandlerResolver<TestEntity>)));
@@ -30,6 +30,7 @@ public class GivenRegistration
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IParametersProcessor<TestEntity, TestParameters>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(ICreator<TestEntity, TestParameters>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IResultTypeHandlerRegistration<TestEntity>)));
+            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IValidationResultBuilderCreator)));
         }
     }
 }

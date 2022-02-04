@@ -39,6 +39,8 @@ public static class Registration
                 new ResultTypeValidator<T, SuccessResult<T>>()
             ));
 
+        serviceCollection.AddSingleton<IValidationResultBuilderCreator, ValidationResultBuilderCreator>();
+
         return serviceCollection;
     }
 }
