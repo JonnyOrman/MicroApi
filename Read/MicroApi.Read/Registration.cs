@@ -12,7 +12,7 @@ public static class Registration
 
         serviceCollection.AddSingleton<IResultTypeHandlerRegistration<T>>(
             new ResultTypeHandlerRegistration<T>(
-                new SuccessResultHandler<T>(
+                new ResultTypeHandler<T, SuccessResult<T>>(
                     new SuccessResultTypedHandler<T>()
                     ),
                 new ResultTypeValidator<T, SuccessResult<T>>()
@@ -31,7 +31,7 @@ public static class Registration
         
         serviceCollection.AddSingleton<IResultTypeHandlerRegistration<IEnumerable<T>>>(
             new ResultTypeHandlerRegistration<IEnumerable<T>>(
-                new SuccessResultHandler<IEnumerable<T>>(
+                new ResultTypeHandler<IEnumerable<T>, SuccessResult<IEnumerable<T>>>(
                     new SuccessResultTypedHandler<IEnumerable<T>>()
                     ),
                 new ResultTypeValidator<IEnumerable<T>, SuccessResult<IEnumerable<T>>>()

@@ -15,7 +15,7 @@ public class GivenRegistration
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddCreate<TestEntity, TestParameters, TestCreator>();
+            serviceCollection.AddCreate<TestEntity, string, TestParameters, TestCreator>();
 
             Assert.Equal(10, serviceCollection.Count);
 

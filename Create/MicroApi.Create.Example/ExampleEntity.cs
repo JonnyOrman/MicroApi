@@ -7,14 +7,14 @@ public class ExampleEntity : Entity<int>
     public ExampleEntity(
         int key,
         string name,
-        int value
+        string type
         ) : base(key)
     {
         Name = name;
-        Value = value;
+        Type = type;
     }
 
     public string Name { get; }
     
-    public int Value { get; }
+    public string Type { get; }
 }

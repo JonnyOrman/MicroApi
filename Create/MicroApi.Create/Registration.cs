@@ -7,9 +7,11 @@ public static class Registration
 {
     public static IServiceCollection AddCreate<
         T,
+        TKey,
         TParameters,
         TCreator
         >(this IServiceCollection serviceCollection)
+        where T : Entity<TKey>
         where TCreator : class, ICreator<T, TParameters>
     {
         serviceCollection.AddSingleton<ICreator<T, TParameters>, TCreator>();
@@ -31,8 +33,8 @@ public static class Registration
 
         serviceCollection.AddSingleton<IResultTypeHandlerRegistration<T>>(
             new ResultTypeHandlerRegistration<T>(
-                new SuccessResultHandler<T>(
-                    new SuccessResultTypedHandler<T>()
+                new ResultTypeHandler<T, SuccessResult<T>>(
+                    new CreatedResultTypedHandler<T, TKey>()
                     ),
                 new ResultTypeValidator<T, SuccessResult<T>>()
             ));

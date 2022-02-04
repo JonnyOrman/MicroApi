@@ -19,7 +19,7 @@ public class ExampleCreator : ICreator<ExampleEntity, ExampleParameters>
         var entity = new ExampleEntity(
             id,
             parameters.Name,
-            parameters.Value
+            parameters.Type
         );
 
         _entities.Add(entity);

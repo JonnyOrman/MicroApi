@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MicroApi.Core;
+using Microsoft.AspNetCore.Http;
 
-namespace MicroApi.Core;
+namespace MicroApi.Read;
 
 public class SuccessResultTypedHandler<T> : ITypedResultTypeHandler<SuccessResult<T>>
 {
