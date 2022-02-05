@@ -1,6 +1,6 @@
 ﻿namespace MicroApi.Core;
 
-public interface IParametersValidationResultHandler<T, TKey>
+public interface IParametersValidationResultHandler<T, TParameters>
 {
-    Task<Result<T>> HandleAsync(TKey key, ValidationResult validationResult);
+    Task<Result<T>> HandleAsync(TParameters parameters, ValidationResult validationResult);
 }

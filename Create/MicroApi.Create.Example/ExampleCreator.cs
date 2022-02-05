@@ -1,6 +1,3 @@
-using MicroApi.Core;
-using MicroApi.Create;
-
 namespace MicroApi.Create.Example;
 
 public class ExampleCreator : ICreator<ExampleEntity, ExampleParameters>
@@ -12,7 +9,7 @@ public class ExampleCreator : ICreator<ExampleEntity, ExampleParameters>
         _entities = new List<ExampleEntity>();
     }
 
-    public async Task<ExampleEntity> Create(ExampleParameters parameters)
+    public async Task<ExampleEntity> CreateAsync(ExampleParameters parameters)
     {
         var id = _entities.Any() ? _entities.Last().Key + 1 : 1;
 

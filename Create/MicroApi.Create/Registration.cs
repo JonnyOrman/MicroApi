@@ -40,6 +40,13 @@ public static class Registration
             ));
 
         serviceCollection.AddSingleton<IValidationResultBuilderCreator, ValidationResultBuilderCreator>();
+        
+        serviceCollection.AddSingleton<IInvalidResultHandler<T>, InvalidParametersResultHandler<T>>();
+        serviceCollection.AddSingleton<IValidParametersHandler<T, TParameters>, ValidParametersHandler<T, TParameters, ICreator<T, TParameters>>>(
+            serviceProvider => new ValidParametersHandler<T, TParameters, ICreator<T, TParameters>>(
+                serviceProvider.GetService<ICreator<T, TParameters>>(),
+                (creator, parameters) => creator.CreateAsync(parameters))
+        );
 
         return serviceCollection;
     }

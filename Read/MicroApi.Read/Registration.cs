@@ -54,6 +54,13 @@ public static class Registration
 
         serviceCollection.AddSingleton<IValidationResultBuilderCreator, ValidationResultBuilderCreator>();
 
+        serviceCollection.AddSingleton<IInvalidResultHandler<T>, InvalidParametersResultHandler<T>>();
+        serviceCollection.AddSingleton<IValidParametersHandler<T, TKey>, ValidParametersHandler<T, TKey, ISingleReader<T, TKey>>>(
+            serviceProvider => new ValidParametersHandler<T, TKey, ISingleReader<T, TKey>>(
+                serviceProvider.GetService<ISingleReader<T, TKey>>(),
+                (reader, parameters) => reader.ReadAsync(parameters))
+            );
+
         return serviceCollection;
     }
 }
