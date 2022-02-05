@@ -18,7 +18,7 @@ public class GivenRegisration
 
             serviceCollection.AddRead<TestEntity, string, TestQuery>();
 
-            Assert.Equal(18, serviceCollection.Count);
+            Assert.Equal(19, serviceCollection.Count);
 
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IGetManyRequestHandler<TestQuery>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IGetSingleRequestHandler<string>)));
@@ -36,6 +36,7 @@ public class GivenRegisration
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IValidationResultBuilderCreator)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IInvalidResultHandler<TestEntity>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IValidParametersHandler<TestEntity, string>)));
+            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IOperationResultHandler<TestEntity, string>)));
             Assert.Equal(2, serviceCollection.Count(serviceDescriptor => serviceDescriptor.ServiceType == typeof(IResultTypeHandlerRegistration<TestEntity>)));
         }
     }

@@ -58,8 +58,11 @@ public static class Registration
         serviceCollection.AddSingleton<IValidParametersHandler<T, TKey>, ValidParametersHandler<T, TKey, ISingleReader<T, TKey>>>(
             serviceProvider => new ValidParametersHandler<T, TKey, ISingleReader<T, TKey>>(
                 serviceProvider.GetService<ISingleReader<T, TKey>>(),
-                (reader, parameters) => reader.ReadAsync(parameters))
+                (reader, parameters) => reader.ReadAsync(parameters),
+                serviceProvider.GetService<IOperationResultHandler<T, TKey>>())
             );
+
+        serviceCollection.AddSingleton<IOperationResultHandler<T, TKey>, SingleReadResultHandler<T, TKey>>();
 
         return serviceCollection;
     }

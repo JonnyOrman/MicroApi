@@ -45,8 +45,11 @@ public static class Registration
         serviceCollection.AddSingleton<IValidParametersHandler<T, TParameters>, ValidParametersHandler<T, TParameters, ICreator<T, TParameters>>>(
             serviceProvider => new ValidParametersHandler<T, TParameters, ICreator<T, TParameters>>(
                 serviceProvider.GetService<ICreator<T, TParameters>>(),
-                (creator, parameters) => creator.CreateAsync(parameters))
+                (creator, parameters) => creator.CreateAsync(parameters),
+                serviceProvider.GetService<IOperationResultHandler<T, TParameters>>())
         );
+
+        serviceCollection.AddSingleton<IOperationResultHandler<T, TParameters>, CreateResultHandler<T, TParameters>>();
 
         return serviceCollection;
     }
