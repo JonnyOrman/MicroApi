@@ -1,5 +1,3 @@
-using MicroApi.Core;
-
 namespace MicroApi.Read.Example;
 
 public class ExampleEntity : Entity<int>

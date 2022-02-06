@@ -1,5 +1,4 @@
-﻿using MicroApi.Core;
-using MicroApi.Create.Testing.UnitTests.TestClasses;
+﻿using MicroApi.Create.Testing.UnitTests.TestClasses;
 using Xunit;
 
 namespace MicroApi.Create.Testing.UnitTests;

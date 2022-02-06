@@ -1,6 +1,4 @@
-﻿using MicroApi.Core;
-
-namespace MicroApi.Read;
+﻿namespace MicroApi.Read;
 
 public class CollectionProvider<T, TQuery> : ICollectionProvider<T, TQuery>
 {

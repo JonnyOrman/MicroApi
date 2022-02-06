@@ -1,5 +1,4 @@
-﻿using MicroApi.Core;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 
 namespace MicroApi.Create;
 public static class Startup

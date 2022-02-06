@@ -1,4 +1,3 @@
-using MicroApi.Core;
 using MicroApi.Create.Testing.UnitTests.TestClasses;
 using Microsoft.AspNetCore.Http;
 using Moq;

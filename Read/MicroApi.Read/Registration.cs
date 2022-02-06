@@ -1,4 +1,3 @@
-using MicroApi.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MicroApi.Read;

@@ -1,6 +1,4 @@
-﻿using MicroApi.Core;
-
-namespace MicroApi.Create;
+﻿namespace MicroApi.Create;
 
 public class CreateResultHandler<T, TParameters> : IOperationResultHandler<T, TParameters>
 {

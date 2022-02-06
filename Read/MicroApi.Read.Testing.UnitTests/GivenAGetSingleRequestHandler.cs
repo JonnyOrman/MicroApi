@@ -1,5 +1,4 @@
-﻿using MicroApi.Core;
-using MicroApi.Read.Testing.UnitTests.TestClasses;
+﻿using MicroApi.Read.Testing.UnitTests.TestClasses;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Threading.Tasks;

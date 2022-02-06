@@ -1,5 +1,4 @@
-﻿using MicroApi.Core;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace MicroApi.Read;
 

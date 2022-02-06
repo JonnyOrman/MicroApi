@@ -1,5 +1,4 @@
-﻿using MicroApi.Core;
-using MicroApi.Read.Testing.UnitTests.TestClasses;
+﻿using MicroApi.Read.Testing.UnitTests.TestClasses;
 using Xunit;
 
 namespace MicroApi.Read.Testing.UnitTests;

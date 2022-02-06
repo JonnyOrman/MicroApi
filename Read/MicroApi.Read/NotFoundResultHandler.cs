@@ -1,6 +1,4 @@
-﻿using MicroApi.Core;
-
-namespace MicroApi.Read;
+﻿namespace MicroApi.Read;
 
 public class NotFoundResultHandler<T, TKey> : ResultTypeHandler<T, NotFoundResult<T, TKey>>
 {

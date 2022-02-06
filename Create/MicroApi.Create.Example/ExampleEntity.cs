@@ -1,6 +1,4 @@
-﻿using MicroApi.Core;
-
-namespace MicroApi.Create.Example;
+﻿namespace MicroApi.Create.Example;
 
 public class ExampleEntity : Entity<int>
 {

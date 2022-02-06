@@ -1,4 +1,3 @@
-using MicroApi.Core;
 using MicroApi.Read.Testing.UnitTests.TestClasses;
 using Moq;
 using System.Collections.Generic;

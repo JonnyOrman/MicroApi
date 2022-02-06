@@ -1,6 +1,4 @@
-﻿using MicroApi.Core;
-
-namespace MicroApi.Read;
+﻿namespace MicroApi.Read;
 
 public class SingleReadResultHandler<T, TKey> : IOperationResultHandler<T, TKey>
 {
