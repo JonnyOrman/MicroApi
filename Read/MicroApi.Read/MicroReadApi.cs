@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MicroApi.Read;
-public static class Startup
+public static class MicroReadApi
 {
     public static void Start<T, TKey, TQuery, TReader>(string [] args)
         where T : Entity<TKey>

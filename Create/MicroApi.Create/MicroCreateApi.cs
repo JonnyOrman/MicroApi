@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
 namespace MicroApi.Create;
-public static class Startup
+public static class MicroCreateApi
 {
     public static void Start<T, TKey, TParameters, TCreator>(string[] args)
         where T : Entity<TKey>

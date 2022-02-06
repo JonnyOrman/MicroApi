@@ -1,3 +1,3 @@
 using MicroApi.Update;
 
-Startup.Start(args);
+MicroUpdateApi.Start(args);

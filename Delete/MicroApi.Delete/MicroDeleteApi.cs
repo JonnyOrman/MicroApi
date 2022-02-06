@@ -1,6 +1,6 @@
 ﻿namespace MicroApi.Delete;
 
-public class Startup
+public class MicroDeleteApi
 {
     public static void Start(string[] args)
     {

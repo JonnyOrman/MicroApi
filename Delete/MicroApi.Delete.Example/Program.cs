@@ -1,3 +1,3 @@
 using MicroApi.Delete;
 
-Startup.Start(args);
+MicroDeleteApi.Start(args);

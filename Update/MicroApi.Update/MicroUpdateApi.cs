@@ -1,6 +1,6 @@
 ﻿namespace MicroApi.Update;
 
-public class Startup
+public class MicroUpdateApi
 {
     public static void Start(string[] args)
     {
