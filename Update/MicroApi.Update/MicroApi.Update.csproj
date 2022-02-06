@@ -10,4 +10,8 @@
     <ProjectUrl>https://github.com/JonnyOrman/MicroApi</ProjectUrl>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MicroApi" Version="1.0.0-alpha.1" />
+  </ItemGroup>
+
 </Project>

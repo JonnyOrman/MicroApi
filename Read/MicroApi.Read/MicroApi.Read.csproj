@@ -15,7 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\MicroApi\MicroApi.csproj" />
+	  <PackageReference Include="MicroApi" Version="1.0.0-alpha.1" />
 	</ItemGroup>
 
 </Project>

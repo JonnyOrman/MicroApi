@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MicroApi.Delete\MicroApi.Delete.csproj" />
+    <PackageReference Include="MicroApi.Delete" Version="1.0.0-alpha.1" />
   </ItemGroup>
 
 </Project>
