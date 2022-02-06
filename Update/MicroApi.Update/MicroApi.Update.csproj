@@ -4,6 +4,10 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Version>1.0.0-alpha.1</Version>
+    <Authors>Jonathan Orman</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <ProjectUrl>https://github.com/JonnyOrman/MicroApi</ProjectUrl>
   </PropertyGroup>
 
 </Project>
