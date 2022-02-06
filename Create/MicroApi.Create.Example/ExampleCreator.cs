@@ -11,6 +11,9 @@ public class ExampleCreator : ICreator<ExampleEntity, ExampleParameters>
 
     public async Task<ExampleEntity> CreateAsync(ExampleParameters parameters)
     {
+        //This is where you might use the parameters to create a new record in some kind of database
+        //and assign the record an ID
+
         var id = _entities.Any() ? _entities.Last().Key + 1 : 1;
 
         var entity = new ExampleEntity(
