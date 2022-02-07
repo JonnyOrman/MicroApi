@@ -1,6 +1,6 @@
 ﻿namespace MicroApi;
 
-public class InvalidParametersResult<T> : Result<T>
+public class InvalidParametersResult<T, TParameters> : Result<T>
 {
     public InvalidParametersResult(
         IEnumerable<InvalidParameter> invalidParameters

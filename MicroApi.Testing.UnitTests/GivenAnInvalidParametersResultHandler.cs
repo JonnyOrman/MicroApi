@@ -40,9 +40,9 @@ public class GivenAnInvalidParametersResultHandler
 
             var invalidResult = new InvalidResult(invalidPropertyValues);
 
-            var sut = new InvalidParametersResultHandler<TestEntity>();
+            var sut = new InvalidParametersResultHandler<TestEntity, TestParameters>();
 
-            var result = sut.Handle(invalidResult) as InvalidParametersResult<TestEntity>;
+            var result = sut.Handle(invalidResult) as InvalidParametersResult<TestEntity, TestParameters>;
 
             var invalidParametersList = result.InvalidParameters.ToList();
             Assert.Equal("Property1", invalidParametersList[0].ParameterName);
