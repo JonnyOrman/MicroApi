@@ -6,8 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MicroApi.Create" Version="1.0.0-alpha.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MicroApi.Create" Version="1.0.0-alpha.2" />
+	</ItemGroup>
 
 </Project>
