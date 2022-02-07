@@ -38,9 +38,17 @@ public static class Registration
                 new ResultTypeValidator<T, SuccessResult<T>>()
             ));
 
+        serviceCollection.AddSingleton<IResultTypeHandlerRegistration<T>>(
+            new ResultTypeHandlerRegistration<T>(
+                new BadRequestResultHandler<T, TParameters>(
+                    new BadRequestResultTypedHandler<T, TParameters>()
+                ),
+                new ResultTypeValidator<T, InvalidParametersResult<T, TParameters>>()
+            ));
+
         serviceCollection.AddSingleton<IValidationResultBuilderCreator, ValidationResultBuilderCreator>();
         
-        serviceCollection.AddSingleton<IInvalidResultHandler<T>, InvalidParametersResultHandler<T>>();
+        serviceCollection.AddSingleton<IInvalidResultHandler<T>, InvalidParametersResultHandler<T, TParameters>>();
         serviceCollection.AddSingleton<IValidParametersHandler<T, TParameters>, ValidParametersHandler<T, TParameters, ICreator<T, TParameters>>>(
             serviceProvider => new ValidParametersHandler<T, TParameters, ICreator<T, TParameters>>(
                 serviceProvider.GetService<ICreator<T, TParameters>>(),
