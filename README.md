@@ -22,17 +22,17 @@ See the `MicroApi.Create.Example` project in the solution for an example on how 
 
 ### Getting started
 
-Create a new .NET project
+Create a new .NET project:
 ```
 dotnet new console --name UserCreateApi
 ```
-Change to the project's directory
+Change to the project's directory:
 ```
 cd UserCreateApi
 ```
-Add the `MicroApi.Create` package
+Add the `MicroApi.Create` package:
 ```
-dotnet add package MicroApi.Create --version 1.0.0-alpha.1
+dotnet add package MicroApi.Create --version 1.0.0-alpha.2
 ```
 In the project directory create a `User.cs` file and add the following entity class to it:
 ```
@@ -106,7 +106,7 @@ Finally, replace the contents of `Program.cs` with the following:
 using MicroApi.Create;
 using UserCreateApi;
 
-MicroCreateApi.Start<User, int, UserParameters, UserCreator>(args);
+MicroCreateApi.New<User, int, UserParameters, UserCreator>(args).Start();
 ```
 
 Run the project:
@@ -121,7 +121,7 @@ Submit a `POST` to `localhost:5000/`, setting the `Content-Type` header to `appl
     "email": "john.doe@gmail.com"
 }
 ```
-You will receive a 201 response with the folling body:
+You will receive a 201 response with the following body:
 ```
 {
     "entity": {
@@ -131,6 +131,100 @@ You will receive a 201 response with the folling body:
     },
     "isSuccessful": true,
     "message": "Success!"
+}
+```
+
+### Validation
+
+Make the `Name` property in the parameters required by modifying the contents of `Program.cs` like so:
+```
+using MicroApi.Create;
+using UserCreateApi;
+
+MicroCreateApi.New<User, int, UserParameters, UserCreator>(args)
+    .Where(parameters => parameters.Name).IsRequired()
+    .Start();
+```
+
+Run the project again and try submitting a body where a name is not provided:
+```
+{
+    "name": null,
+    "email": "john.doe@gmail.com"
+}
+```
+
+You will receive a 400 response with a body detailing the problems with the parameters:
+```
+{
+    "invalidParameters": [
+        {
+            "parameterName": "Name",
+            "messages": [
+                "Value is null"
+            ]
+        }
+    ],
+    "isSuccessful": false,
+    "message": "Invalid parameters provided"
+}
+```
+
+Let's add validation to the `Email` property. Create a new file called `EmailRule.cs` and add the following class to it:
+```
+using MicroApi;
+
+namespace UserCreateApi;
+
+public class EmailRule : IValidationRule<UserParameters>
+{
+    public ValidationRuleResult Validate(UserParameters value)
+    {
+        //keep it simple for demo purposes
+        var isValid = value.Email.Contains('@') && value.Email.Contains('.');
+
+        if (isValid)
+        {
+            return new ValidationRuleResult(true);
+        }
+        
+        return new InvalidPropertyRuleResult(nameof(value.Email), $"{value.Email} is not a valid email");
+    }
+}
+```
+
+Update `Program.cs` to use the email rule:
+```
+using MicroApi.Create;
+using UserCreateApi;
+
+MicroCreateApi.New<User, int, UserParameters, UserCreator>(args)
+    .Where(parameters => parameters.Name).IsRequired()
+    .MustPass<EmailRule>()
+    .Start();
+```
+
+Run the project again and try submitting a body where the email does not meet the requirements in the rule:
+```
+{
+    "name": "John Doe",
+    "email": "johndoegmailcom"
+}
+```
+
+You will receive another 400 response:
+```
+{
+    "invalidParameters": [
+        {
+            "parameterName": "Email",
+            "messages": [
+                "johndoegmailcom is not a valid email"
+            ]
+        }
+    ],
+    "isSuccessful": false,
+    "message": "Invalid parameters provided"
 }
 ```
 
