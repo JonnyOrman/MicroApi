@@ -8,7 +8,7 @@ public class GivenANotFoundResultTypedHandler
     public class WhenANotFoundResultIsHandled
     {
         [Fact]
-        public void ThenItReturnsANotFoundStatusResult()
+        public void ThenItReturnsANotFoundObjectResult()
         {
             var key = "ghi";
 
