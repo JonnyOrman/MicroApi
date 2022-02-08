@@ -32,7 +32,7 @@ cd UserCreateApi
 ```
 Add the `MicroApi.Create` package:
 ```
-dotnet add package MicroApi.Create --version 1.0.0-alpha.2
+dotnet add package MicroApi.Create --version 1.0.0-alpha.3
 ```
 In the project directory create a `User.cs` file and add the following entity class to it:
 ```
