@@ -53,7 +53,7 @@ public static class Registration
 
         serviceCollection.AddSingleton<IValidationResultBuilderCreator, ValidationResultBuilderCreator>();
 
-        serviceCollection.AddSingleton<IInvalidResultHandler<T>, InvalidParametersResultHandler<T>>();
+        serviceCollection.AddSingleton<IInvalidResultHandler<T>, InvalidParametersResultHandler<T, TKey>>();
         serviceCollection.AddSingleton<IValidParametersHandler<T, TKey>, ValidParametersHandler<T, TKey, ISingleReader<T, TKey>>>(
             serviceProvider => new ValidParametersHandler<T, TKey, ISingleReader<T, TKey>>(
                 serviceProvider.GetService<ISingleReader<T, TKey>>(),
@@ -61,8 +61,16 @@ public static class Registration
                 serviceProvider.GetService<IOperationResultHandler<T, TKey>>())
             );
 
-        serviceCollection.AddSingleton<IOperationResultHandler<T, TKey>, SingleReadResultHandler<T, TKey>>();
+        serviceCollection.AddSingleton<IOperationResultHandler<T, TKey>, OperationResultHandler<T, TKey>>();
 
+        serviceCollection.AddSingleton<IOperationSuccessResultHandler<T, TKey>, OperationSuccessResultHandler<T, TKey>>();
+        serviceCollection.AddSingleton<IOperationSuccessEventsRunner<T, TKey>, OperationSuccessEventsRunner<T, TKey>>();
+        serviceCollection.AddSingleton<IOperationSuccessResultGenerator<T>, OperationSuccessResultGenerator<T>>();
+
+        serviceCollection.AddSingleton<IOperationFailedResultHandler<T, TKey>, OperationFailedResultHandler<T, TKey>>();
+        serviceCollection.AddSingleton<IOperationFailedEventsRunner<TKey>, OperationFailedEventsRunner<TKey>>();
+        serviceCollection.AddSingleton<IOperationFailedResultGenerator<T, TKey>, ReadSingleFailedResultGenerator<T, TKey>>();
+        
         return serviceCollection;
     }
 }

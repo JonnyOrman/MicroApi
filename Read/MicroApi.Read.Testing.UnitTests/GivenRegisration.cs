@@ -17,7 +17,7 @@ public class GivenRegisration
 
             serviceCollection.AddRead<TestEntity, string, TestQuery>();
 
-            Assert.Equal(19, serviceCollection.Count);
+            Assert.Equal(25, serviceCollection.Count);
 
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IGetManyRequestHandler<TestQuery>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IGetSingleRequestHandler<string>)));
@@ -36,6 +36,12 @@ public class GivenRegisration
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IInvalidResultHandler<TestEntity>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IValidParametersHandler<TestEntity, string>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IOperationResultHandler<TestEntity, string>)));
+            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IOperationSuccessResultHandler<TestEntity, string>)));
+            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IOperationSuccessEventsRunner<TestEntity, string>)));
+            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IOperationSuccessResultGenerator<TestEntity>)));
+            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IOperationFailedResultHandler<TestEntity, string>)));
+            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IOperationFailedEventsRunner<string>)));
+            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IOperationFailedResultGenerator<TestEntity, string>)));
             Assert.Equal(2, serviceCollection.Count(serviceDescriptor => serviceDescriptor.ServiceType == typeof(IResultTypeHandlerRegistration<TestEntity>)));
         }
     }

@@ -41,7 +41,7 @@ public static class Registration
         serviceCollection.AddSingleton<IResultTypeHandlerRegistration<T>>(
             new ResultTypeHandlerRegistration<T>(
                 new BadRequestResultHandler<T, TParameters>(
-                    new BadRequestResultTypedHandler<T, TParameters>()
+                    new InvalidParametersResultTypedHandler<T, TParameters>()
                 ),
                 new ResultTypeValidator<T, InvalidParametersResult<T, TParameters>>()
             ));
@@ -56,8 +56,16 @@ public static class Registration
                 serviceProvider.GetService<IOperationResultHandler<T, TParameters>>())
         );
 
-        serviceCollection.AddSingleton<IOperationResultHandler<T, TParameters>, CreateResultHandler<T, TParameters>>();
+        serviceCollection.AddSingleton<IOperationResultHandler<T, TParameters>, OperationResultHandler<T, TParameters>>();
 
+        serviceCollection.AddSingleton<IOperationSuccessResultHandler<T, TParameters>, OperationSuccessResultHandler<T, TParameters>>();
+        serviceCollection.AddSingleton<IOperationSuccessEventsRunner<T, TParameters>, OperationSuccessEventsRunner<T, TParameters>>();
+        serviceCollection.AddSingleton<IOperationSuccessResultGenerator<T>, OperationSuccessResultGenerator<T>>();
+
+        serviceCollection.AddSingleton<IOperationFailedResultHandler<T, TParameters>, OperationFailedResultHandler<T, TParameters>>();
+        serviceCollection.AddSingleton<IOperationFailedEventsRunner<TParameters>, OperationFailedEventsRunner<TParameters>>();
+        serviceCollection.AddSingleton<IOperationFailedResultGenerator<T, TParameters>, CreateFailedResultGenerator<T, TParameters>>();
+        
         return serviceCollection;
     }
 }

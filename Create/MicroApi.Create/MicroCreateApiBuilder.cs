@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace MicroApi.Create;
 
-public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBuilder<TParameters>
+public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBuilder<T, TParameters>
     where T : Entity<TKey>
     where TCreator : class, ICreator<T, TParameters>
 {
@@ -28,7 +28,7 @@ public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBu
         };
     }
 
-    public IMicroApiBuilder<TParameters> Where<TProperty>(Expression<Func<TParameters, TProperty>> propertyExpression)
+    public IMicroApiBuilder<T, TParameters> Where<TProperty>(Expression<Func<TParameters, TProperty>> propertyExpression)
     {
         if (_currentPropertyValidatorBuilder != null)
         {
@@ -45,7 +45,7 @@ public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBu
         return this;
     }
 
-    public IMicroApiBuilder<TParameters> IsRequired()
+    public IMicroApiBuilder<T, TParameters> IsRequired()
     {
         _currentPropertyValidatorBuilder.IsRequired();
 
@@ -73,10 +73,26 @@ public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBu
         webApplication.Run();
     }
 
-    public IMicroApiBuilder<TParameters> MustPass<TValidationRule>()
+    public IMicroApiBuilder<T, TParameters> MustPass<TValidationRule>()
         where TValidationRule : IValidationRule<TParameters>, new()
     {
         _currentPropertyValidatorBuilder.MustPass<TValidationRule>();
+
+        return this;
+    }
+
+    public IMicroApiBuilder<T, TParameters> OnSuccess<TSuccessEvent>()
+        where TSuccessEvent : class, IOperationSuccessEvent<T, TParameters>
+    {
+        _builder.Services.AddSingleton<IOperationSuccessEvent<T, TParameters>, TSuccessEvent>();
+
+        return this;
+    }
+
+    public IMicroApiBuilder<T, TParameters> OnFailure<TFailedEvent>()
+        where TFailedEvent : class, IOperationFailedEvent<TParameters>
+    {
+        _builder.Services.AddSingleton<IOperationFailedEvent<TParameters>, TFailedEvent>();
 
         return this;
     }
