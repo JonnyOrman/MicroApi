@@ -2,14 +2,19 @@
 
 namespace MicroApi;
 
-public interface IMicroApiBuilder<TParameters>
+public interface IMicroApiBuilder<T, TParameters>
 {
-    IMicroApiBuilder<TParameters> Where<TProperty>(Expression<Func<TParameters, TProperty>> propertyExpression);
+    IMicroApiBuilder<T, TParameters> Where<TProperty>(Expression<Func<TParameters, TProperty>> propertyExpression);
 
-    IMicroApiBuilder<TParameters> IsRequired();
+    IMicroApiBuilder<T, TParameters> IsRequired();
 
     void Start();
 
-    IMicroApiBuilder<TParameters> MustPass<TValidationRule>()
+    IMicroApiBuilder<T, TParameters> MustPass<TValidationRule>()
         where TValidationRule : IValidationRule<TParameters>, new();
+
+    IMicroApiBuilder<T, TParameters> OnSuccess<TSuccessEvent>()
+        where TSuccessEvent : class, IOperationSuccessEvent<T, TParameters>;
+    IMicroApiBuilder<T, TParameters> OnFailure<TFailedEvent>()
+        where TFailedEvent : class, IOperationFailedEvent<TParameters>;
 }
