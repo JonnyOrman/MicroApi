@@ -228,6 +228,41 @@ You will receive another 400 response:
 }
 ```
 
+### On creation events
+
+Create a new file called `LogUserCreateSuccessEvent.cs` and add the following class to it:
+```
+using MicroApi;
+
+namespace UserCreateApi;
+
+public class LogUserCreateSuccessEvent : IOperationSuccessEvent<User, UserParameters>
+{
+    public void Run(User entity, UserParameters parameters)
+    {
+        Console.WriteLine($"{nameof(User)} successfully created with Key {entity.Key}");
+    }
+}
+```
+This is an event that will trigger when entity creation is successful.
+
+Update `Program.cs` to register the event:
+```
+using MicroApi.Create;
+using UserCreateApi;
+
+MicroCreateApi.New<User, int, UserParameters, UserCreator>(args)
+    .Where(parameters => parameters.Name).IsRequired()
+    .MustPass<EmailRule>()
+    .OnSuccess<LogUserCreateSuccessEvent>()
+    .Start();
+```
+
+Run the project again and submit a valid body. You will see the following message in the console when the entity is successfully created (followed by its key):
+```
+User successfully created with Key 
+```
+
 ## [MicroApi.Read](https://www.nuget.org/packages/MicroApi.Read/)
 
 In progress.
