@@ -1,6 +1,8 @@
 using MicroApi.Create;
 using MicroApi.Create.Example;
 
-MicroCreateApi.New<ExampleEntity, int, ExampleParameters, ExampleCreator>(args)
-    .Where(exampleParameters => exampleParameters.Name).IsRequired()
+MicroCreateApi.New<User, int, UserParameters, UserCreator>(args)
+    .Where(parameters => parameters.Name).IsRequired()
+    .MustPass<EmailRule>()
+    .OnSuccess<LogUserCreateSuccessEvent>()
     .Start();
