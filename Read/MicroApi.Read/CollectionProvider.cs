@@ -2,10 +2,10 @@
 
 public class CollectionProvider<T, TQuery> : ICollectionProvider<T, TQuery>
 {
-    private readonly ICollectionReader<T, TQuery> _collectionReader;
+    private readonly IOperation<IEnumerable<T>, TQuery> _collectionReader;
 
     public CollectionProvider(
-        ICollectionReader<T, TQuery> collectionReader
+        IOperation<IEnumerable<T>, TQuery> collectionReader
         )
     {
         _collectionReader = collectionReader;
@@ -13,7 +13,7 @@ public class CollectionProvider<T, TQuery> : ICollectionProvider<T, TQuery>
 
     public async Task<Result<IEnumerable<T>>> GetAsync(TQuery query)
     {
-        var result = await _collectionReader.ReadManyAsync(query);
+        var result = await _collectionReader.ExecuteAsync(query);
 
         return new SuccessResult<IEnumerable<T>>(result);
     }

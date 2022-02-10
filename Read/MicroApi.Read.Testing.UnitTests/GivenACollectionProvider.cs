@@ -17,16 +17,16 @@ public class GivenACollectionProvider
 
             var collection = new List<TestEntity>();
 
-            var collectionReaderMock = new Mock<ICollectionReader<TestEntity, TestQuery>>();
+            var collectionReaderMock = new Mock<IOperation<IEnumerable<TestEntity>, TestQuery>>();
             collectionReaderMock
-                .Setup(x => x.ReadManyAsync(query))
+                .Setup(x => x.ExecuteAsync(query))
                 .ReturnsAsync(collection);
 
             var sut = new CollectionProvider<TestEntity, TestQuery>(collectionReaderMock.Object);
 
             var result = await sut.GetAsync(query);
 
-            collectionReaderMock.Verify(collectionReader => collectionReader.ReadManyAsync(query), Times.Once);
+            collectionReaderMock.Verify(collectionReader => collectionReader.ExecuteAsync(query), Times.Once);
 
             var successResult = result as SuccessResult<IEnumerable<TestEntity>>;
             Assert.Equal(collection, successResult.Entity);
