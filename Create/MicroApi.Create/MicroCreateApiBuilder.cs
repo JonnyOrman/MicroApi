@@ -6,7 +6,7 @@ namespace MicroApi.Create;
 
 public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBuilder<T, TParameters>
     where T : Entity<TKey>
-    where TCreator : class, ICreator<T, TParameters>
+    where TCreator : class, IOperation<T, TParameters>
 {
     private readonly WebApplicationBuilder _builder;
     private IPropertyValidatorBuilder<TParameters> _currentPropertyValidatorBuilder;
@@ -22,7 +22,7 @@ public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBu
 
     private Delegate PostAction<TParameters>()
     {
-        return async (TParameters parameters, IPostRequestHandler<TParameters> handler) =>
+        return async (TParameters parameters, IRequestHandler<TParameters> handler) =>
         {
             return await handler.HandleAsync(parameters);
         };

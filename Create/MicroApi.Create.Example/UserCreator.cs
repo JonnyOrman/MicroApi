@@ -1,6 +1,6 @@
 namespace MicroApi.Create.Example;
 
-public class UserCreator : ICreator<User, UserParameters>
+public class UserCreator : IOperation<User, UserParameters>
 {
     private readonly ICollection<User> _users;
 
@@ -9,7 +9,7 @@ public class UserCreator : ICreator<User, UserParameters>
         _users = new List<User>();
     }
 
-    public async Task<User> CreateAsync(UserParameters userParameters)
+    public async Task<User> ExecuteAsync(UserParameters userParameters)
     {
         //This is where you might use the parameters to create a new record in some kind of database
         //and assign the record an ID

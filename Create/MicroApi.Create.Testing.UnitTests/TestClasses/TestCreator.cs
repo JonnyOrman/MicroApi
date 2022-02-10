@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace MicroApi.Create.Testing.UnitTests.TestClasses;
 
-public class TestCreator : ICreator<TestEntity, TestParameters>
+public class TestCreator : IOperation<TestEntity, TestParameters>
 {
-    public Task<TestEntity> CreateAsync(TestParameters parameters)
+    public Task<TestEntity> ExecuteAsync(TestParameters parameters)
     {
         throw new NotImplementedException();
     }

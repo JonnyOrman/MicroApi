@@ -20,13 +20,13 @@ public class GivenRegistration
             
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IResultTypeHandlerResolver<TestEntity>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IResultHandler<TestEntity>)));
-            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IPostRequestHandler<TestParameters>)));
+            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IRequestHandler<TestParameters>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IParametersValidationResultHandler<TestEntity, TestParameters>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IValidator<TestParameters>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IValidationResultGenerator<TestParameters>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IValidationRuleResultsCalculator<TestParameters>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IParametersProcessor<TestEntity, TestParameters>)));
-            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(ICreator<TestEntity, TestParameters>)));
+            Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IOperation<TestEntity, TestParameters>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IValidationResultBuilderCreator)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IInvalidResultHandler<TestEntity>)));
             Assert.NotNull(serviceCollection.Single(x => x.ServiceType == typeof(IValidParametersHandler<TestEntity, TestParameters>)));
