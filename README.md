@@ -32,7 +32,7 @@ cd UserCreateApi
 ```
 Add the `MicroApi.Create` package:
 ```
-dotnet add package MicroApi.Create --version 1.0.0-alpha.3
+dotnet add package MicroApi.Create --version 1.0.0-alpha.4
 ```
 In the project directory create a `User.cs` file and add the following entity class to it:
 ```
@@ -70,11 +70,11 @@ public class UserParameters
 
 Create a `UserCreator.cs` file and add the following creator class to it:
 ```
-using MicroApi.Create;
+using MicroApi;
 
 namespace UserCreateApi;
 
-public class UserCreator : ICreator<User, UserParameters>
+public class UserCreator : IOperation<User, UserParameters>
 {
     private readonly ICollection<User> _users;
 
@@ -83,7 +83,7 @@ public class UserCreator : ICreator<User, UserParameters>
         _users = new List<User>();
     }
 
-    public async Task<User> CreateAsync(UserParameters userParameters)
+    public async Task<User> ExecuteAsync(UserParameters userParameters)
     {
         var id = _users.Any() ? _users.Last().Key + 1 : 1;
 
@@ -240,7 +240,7 @@ public class LogUserCreateSuccessEvent : IOperationSuccessEvent<User, UserParame
 {
     public void Run(User entity, UserParameters parameters)
     {
-        Console.WriteLine($"{nameof(User)} successfully created with Key {entity.Key}");
+        Console.WriteLine($"{nameof(User)} successfully created with {nameof(entity.Key)} {entity.Key}");
     }
 }
 ```

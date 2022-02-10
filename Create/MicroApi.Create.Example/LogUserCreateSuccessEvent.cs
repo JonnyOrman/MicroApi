@@ -4,6 +4,6 @@ public class LogUserCreateSuccessEvent : IOperationSuccessEvent<User, UserParame
 {
     public void Run(User entity, UserParameters parameters)
     {
-        Console.WriteLine($"{nameof(User)} successfully created with Key {entity.Key}");
+        Console.WriteLine($"{nameof(User)} successfully created with {nameof(entity.Key)} {entity.Key}");
     }
 }
