@@ -8,13 +8,11 @@ public static class Registration
         T,
         TKey,
         TParameters,
-        TRequestHandlerAbstraction,
-        TRequestHandler,
+        TOperation,
         TFailedResultGenerator
         >(this IServiceCollection serviceCollection)
         where T : Entity<TKey>
-        where TRequestHandlerAbstraction : class
-        where TRequestHandler : class, TRequestHandlerAbstraction
+        where TOperation : class, IOperation<T, TParameters>
         where TFailedResultGenerator : class, IOperationFailedResultGenerator<T, TParameters>
     {
         serviceCollection.AddSingleton<IParametersProcessor<T, TParameters>, ValidationParametersProcessor<T, TParameters>>();
@@ -27,12 +25,14 @@ public static class Registration
 
         serviceCollection.AddSingleton<IParametersValidationResultHandler<T, TParameters>, ParametersValidationResultHandler<T, TParameters>>();
 
-        serviceCollection.AddSingleton<TRequestHandlerAbstraction, TRequestHandler>();
+        serviceCollection.AddSingleton<IRequestHandler<TParameters>, RequestHandler<T, TParameters>>();
 
         serviceCollection.AddSingleton<IResultHandler<T>, ResultHandler<T>>();
         serviceCollection.AddSingleton<IResultTypeHandlerResolver<T>, ResultTypeHandlerResolver<T>>();
 
         serviceCollection.AddSingleton<IValidationResultBuilderCreator, ValidationResultBuilderCreator>();
+
+        serviceCollection.AddSingleton<IOperation<T, TParameters>, TOperation>();
 
         serviceCollection.AddSingleton<IOperationResultHandler<T, TParameters>, OperationResultHandler<T, TParameters>>();
 
