@@ -32,7 +32,7 @@ cd UserCreateApi
 ```
 Add the `MicroApi.Create` package:
 ```
-dotnet add package MicroApi.Create --version 1.0.0-alpha.4
+dotnet add package MicroApi.Create --version 1.0.0-alpha.5
 ```
 In the project directory create a `User.cs` file and add the following entity class to it:
 ```
@@ -262,6 +262,77 @@ Run the project again and submit a valid body. You will see the following messag
 ```
 User successfully created with Key 
 ```
+
+### Registering additional services
+
+Additional services can be registered when the program is constructed.
+
+Let's delegate the responsibility of generating the log message to a separate service and provide that service to the logger to see how to do this.
+
+Create a new file called `IUserCreateMessageGenerator.cs` and add the following class to it:
+```
+namespace UserCreateApi;
+
+public interface IUserCreateMessageGenerator
+{
+    string Generate(User user);
+}
+```
+
+Create a new file called `UserCreateMessageGenerator.cs` and add the following class to it:
+```
+namespace UserCreateApi;
+
+public class UserCreateMessageGenerator : IUserCreateMessageGenerator
+{
+    public string Generate(User user)
+    {
+        return $"{nameof(User)} successfully created with {nameof(user.Key)} {user.Key}";
+    }
+}
+```
+
+Update `LogUserCreateSuccessEvent.cs` to use the new message generator service:
+```
+using MicroApi;
+
+namespace UserCreateApi;
+
+public class LogUserCreateSuccessEvent : IOperationSuccessEvent<User, UserParameters>
+{
+    private readonly IUserCreateMessageGenerator _userCreateMessageGenerator;
+
+    public LogUserCreateSuccessEvent(IUserCreateMessageGenerator userCreateMessageGenerator)
+    {
+        _userCreateMessageGenerator = userCreateMessageGenerator;
+    }
+
+    public void Run(User user, UserParameters parameters)
+    {
+        var message = _userCreateMessageGenerator.Generate(user);
+
+        Console.WriteLine(message);
+    }
+}
+```
+
+Update `Program.cs` to register the message generator service:
+```
+using MicroApi.Create;
+using Microsoft.Extensions.DependencyInjection;
+using UserCreateApi;
+
+MicroCreateApi.New<User, int, UserParameters, UserCreator>(args, serviceCollection =>
+    {
+        serviceCollection.AddSingleton<IUserCreateMessageGenerator, UserCreateMessageGenerator>();
+    })
+    .Where(parameters => parameters.Name).IsRequired()
+    .MustPass<EmailRule>()
+    .OnSuccess<LogUserCreateSuccessEvent>()
+    .Start();
+```
+
+Run the project again and submit a valid body. The entity will be created and you will see the message in the console like before, only now the API is using a different registered service to generate the message.
 
 ## [MicroApi.Read](https://www.nuget.org/packages/MicroApi.Read/)
 

@@ -2,8 +2,17 @@ namespace MicroApi.Create.Example;
 
 public class LogUserCreateSuccessEvent : IOperationSuccessEvent<User, UserParameters>
 {
-    public void Run(User entity, UserParameters parameters)
+    private readonly IUserCreateMessageGenerator _userCreateMessageGenerator;
+
+    public LogUserCreateSuccessEvent(IUserCreateMessageGenerator userCreateMessageGenerator)
     {
-        Console.WriteLine($"{nameof(User)} successfully created with {nameof(entity.Key)} {entity.Key}");
+        _userCreateMessageGenerator = userCreateMessageGenerator;
+    }
+
+    public void Run(User user, UserParameters parameters)
+    {
+        var message = _userCreateMessageGenerator.Generate(user);
+
+        Console.WriteLine(message);
     }
 }
