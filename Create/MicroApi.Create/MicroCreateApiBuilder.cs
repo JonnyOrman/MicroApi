@@ -4,20 +4,24 @@ using System.Linq.Expressions;
 
 namespace MicroApi.Create;
 
-public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBuilder<T, TParameters>
+public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroCreateApiBuilder<T, TParameters>
     where T : Entity<TKey>
     where TCreator : class, IOperation<T, TParameters>
 {
+    private readonly Action<IServiceCollection> _registerAdditionalServices;
     private readonly WebApplicationBuilder _builder;
     private IPropertyValidatorBuilder<TParameters> _currentPropertyValidatorBuilder;
 
-    public MicroCreateApiBuilder(string[] args)
+    public MicroCreateApiBuilder(
+        string[] args,
+        Action<IServiceCollection> registerAdditionalServices
+        )
     {
+        _registerAdditionalServices = registerAdditionalServices;
+
         _builder = WebApplication.CreateBuilder(args);
 
         _builder.Services.AddCreate<T, TKey, TParameters, TCreator>();
-
-        _builder.Services.AddSingleton(PostAction<TParameters>());
     }
 
     private Delegate PostAction<TParameters>()
@@ -28,7 +32,7 @@ public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBu
         };
     }
 
-    public IMicroApiBuilder<T, TParameters> Where<TProperty>(Expression<Func<TParameters, TProperty>> propertyExpression)
+    public IMicroCreateApiBuilder<T, TParameters> Where<TProperty>(Expression<Func<TParameters, TProperty>> propertyExpression)
     {
         if (_currentPropertyValidatorBuilder != null)
         {
@@ -45,7 +49,7 @@ public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBu
         return this;
     }
 
-    public IMicroApiBuilder<T, TParameters> IsRequired()
+    public IMicroCreateApiBuilder<T, TParameters> IsRequired()
     {
         _currentPropertyValidatorBuilder.IsRequired();
 
@@ -64,6 +68,8 @@ public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBu
             }
         }
 
+        _registerAdditionalServices.Invoke(_builder.Services);
+
         var webApplication = _builder.Build();
 
         webApplication.UseHttpsRedirection();
@@ -73,7 +79,7 @@ public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBu
         webApplication.Run();
     }
 
-    public IMicroApiBuilder<T, TParameters> MustPass<TValidationRule>()
+    public IMicroCreateApiBuilder<T, TParameters> MustPass<TValidationRule>()
         where TValidationRule : IValidationRule<TParameters>, new()
     {
         _currentPropertyValidatorBuilder.MustPass<TValidationRule>();
@@ -81,7 +87,7 @@ public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBu
         return this;
     }
 
-    public IMicroApiBuilder<T, TParameters> OnSuccess<TSuccessEvent>()
+    public IMicroCreateApiBuilder<T, TParameters> OnSuccess<TSuccessEvent>()
         where TSuccessEvent : class, IOperationSuccessEvent<T, TParameters>
     {
         _builder.Services.AddSingleton<IOperationSuccessEvent<T, TParameters>, TSuccessEvent>();
@@ -89,7 +95,7 @@ public class MicroCreateApiBuilder<T, TKey, TParameters, TCreator> : IMicroApiBu
         return this;
     }
 
-    public IMicroApiBuilder<T, TParameters> OnFailure<TFailedEvent>()
+    public IMicroCreateApiBuilder<T, TParameters> OnFailure<TFailedEvent>()
         where TFailedEvent : class, IOperationFailedEvent<TParameters>
     {
         _builder.Services.AddSingleton<IOperationFailedEvent<TParameters>, TFailedEvent>();
