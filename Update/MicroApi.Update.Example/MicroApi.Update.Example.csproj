@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MicroApi.Update" Version="1.0.0-alpha.1" />
+    <PackageReference Include="MicroApi.Update" Version="1.0.0-alpha.2" />
   </ItemGroup>
 
 </Project>

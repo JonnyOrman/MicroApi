@@ -1,3 +1,4 @@
 using MicroApi.Update;
+using MicroApi.Update.Example;
 
-MicroUpdateApi.Start(args);
+MicroUpdateApi.New<ExampleEntity, int, ExampleParameters, ExampleUpdater>(args).Start();

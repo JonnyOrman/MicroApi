@@ -1,3 +1,4 @@
 using MicroApi.Delete;
+using MicroApi.Delete.Example;
 
-MicroDeleteApi.Start(args);
+MicroDeleteApi.New<ExampleEntity, int, ExampleDeleter>(args).Start();
