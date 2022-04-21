@@ -1,30 +1,26 @@
 ﻿using MicroApi.Testing.UnitTests.TestClasses;
-using Moq;
 using System.Collections.Generic;
+using XpressTest;
 using Xunit;
 
 namespace MicroApi.Testing.UnitTests;
 
 public class GivenAnInvalidParametersResultTypedHandler
 {
-    public class WhenAnInvalidParametersResultIsHandled
-    {
-        [Fact]
-        public void ThenItReturnsABadRequestObjectResult()
-        {
-            var invalidParametersMock = new Mock<IEnumerable<InvalidParameter>>();
+    [Fact]
+    public void WhenAnInvalidParametersResultIsHandledThenItReturnsABadRequestObjectResult() =>
+        GivenA<InvalidParametersResultTypedHandler<TestEntity, TestParameters>>
+                .AndGivenA<IEnumerable<InvalidParameter>>()
+                .AndGiven(arrangement => new InvalidParametersResult<TestEntity, TestParameters>(arrangement.GetTheMockObject<IEnumerable<InvalidParameter>>()))
+            .WhenIt(action => action.Sut.Handle(action.GetThe<InvalidParametersResult<TestEntity, TestParameters>>()))
+            .Then(assertion =>
+            {
+                Assert.Equal("Microsoft.AspNetCore.Http.Result.BadRequestObjectResult", assertion.Result.GetType().FullName);
 
-            var notFoundResult = new InvalidParametersResult<TestEntity, TestParameters>(invalidParametersMock.Object);
-
-            var sut = new InvalidParametersResultTypedHandler<TestEntity, TestParameters>();
-
-            var result = sut.Handle(notFoundResult);
-
-            Assert.Equal("Microsoft.AspNetCore.Http.Result.BadRequestObjectResult", result.GetType().FullName);
-
-            var valueProperty = result.GetType().GetProperty("Value");
-            var value = valueProperty.GetValue(result);
-            Assert.Equal(notFoundResult, value);
-        }
-    }
+                var notFoundResult = assertion.GetThe<InvalidParametersResult<TestEntity, TestParameters>>();
+                
+                var valueProperty = assertion.Result.GetType().GetProperty("Value");
+                var value = valueProperty.GetValue(assertion.Result);
+                Assert.Equal(notFoundResult, value);
+            });
 }

@@ -1,55 +1,29 @@
 ﻿using MicroApi.Testing.UnitTests.TestClasses;
 using Moq;
+using XpressTest;
 using Xunit;
 
 namespace MicroApi.Testing.UnitTests;
 
 public class GivenAResultTypeHandlerRegistration
 {
-    public class WhenItIsConstructed
-    {
-        [Fact]
-        public void ThenItShouldHaveTheProvidedHandler()
-        {
-            var resultTypeHandlerMock = new Mock<IResultTypeHandler<TestEntity>>();
-
-            var validatorMock = new Mock<IValidator<Result<TestEntity>>>();
-
-            var sut = new ResultTypeHandlerRegistration<TestEntity>(
-                resultTypeHandlerMock.Object,
-                validatorMock.Object
-                );
-
-            var result = sut.Handler;
-
-            Assert.Equal(resultTypeHandlerMock.Object, result);
-        }
-    }
-
-    public class WhenAResultIsCheckedForAMatch
-    {
-        [Fact]
-        public void ThenTheResultsIsValidated()
-        {
-            var testEntityResult = new Result<TestEntity>(true, "success");
-
-            var validationResult = new ValidationResult(true);
-
-            var resultTypeHandlerMock = new Mock<IResultTypeHandler<TestEntity>>();
-
-            var validatorMock = new Mock<IValidator<Result<TestEntity>>>();
-            validatorMock
-                .Setup(validator => validator.Validate(testEntityResult))
-                .Returns(validationResult);
-
-            var sut = new ResultTypeHandlerRegistration<TestEntity>(
-                resultTypeHandlerMock.Object,
-                validatorMock.Object
-            );
-
-            var result = sut.IsMatch(testEntityResult);
-
-            Assert.True(result);
-        }
-    }
+    [Fact]
+    public void WhenItIsConstructedThenItShouldHaveTheProvidedHandler() =>
+        GivenA<ResultTypeHandlerRegistration<TestEntity>>
+            .WithA<IResultTypeHandler<TestEntity>>()
+            .WithA<IValidator<Result<TestEntity>>>()
+            .WhenIt(sut => sut.Handler)
+            .ThenTheResultShouldBe(arrangement => arrangement.GetTheMockObject<IResultTypeHandler<TestEntity>>());
+    
+    [Fact]
+    public void WhenAResultIsCheckedForAMatchThenTheResultsIsValidated() =>
+        GivenA<ResultTypeHandlerRegistration<TestEntity>>
+                .AndGiven(new Result<TestEntity>(true, "success"))
+                .AndGiven(new ValidationResult(true))
+            .WithA<IResultTypeHandler<TestEntity>>()
+            .WithA<IValidator<Result<TestEntity>>>()
+                .ThatDoes<ValidationResult>(arrangement => validator => validator.Validate(arrangement.GetThe<Result<TestEntity>>()))
+                .AndReturns(arrangement => arrangement.GetThe<ValidationResult>())
+            .WhenIt(action => action.Sut.IsMatch(action.GetThe<Result<TestEntity>>()))
+            .ThenTheResultShouldBe(true);
 }

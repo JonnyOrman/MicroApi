@@ -1,39 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MicroApi.Testing.UnitTests.TestClasses;
-using Moq;
+using XpressTest;
 using Xunit;
 
 namespace MicroApi.Testing.UnitTests;
 
 public class GivenAValidParametersHandler
 {
-    public class WhenSomeParametersAreHandled
-    {
-        [Fact]
-        public async Task ThenTheOperationResultIsHandled()
-        {
-            var parameters = new TestParameters();
-
-            var entity = new TestEntity(1);
-
-            var testOperator = new TestOperator(entity);
-
-            var operationResultHandledResult = new Result<TestEntity>(true, "success");
-
-            var operationResultHandlerMock = new Mock<IOperationResultHandler<TestEntity, TestParameters>>();
-            operationResultHandlerMock
-                .Setup(operationResultHandler => operationResultHandler.Handle(entity, parameters))
-                .Returns(operationResultHandledResult);
-
-            var sut = new ValidParametersHandler<TestEntity, TestParameters, TestOperator>(
-                testOperator,
-                (testOperator, testParameters) => testOperator.Execute(testParameters),
-                operationResultHandlerMock.Object
-            );
-
-            var result = await sut.HandleAsync(parameters);
-
-            Assert.Equal(operationResultHandledResult, result);
-        }
-    }
+    [Fact]
+    public void WhenSomeParametersAreHandledThenTheOperationResultIsHandled() =>
+        GivenA<ValidParametersHandler<TestEntity, TestParameters, TestOperator>>
+                .AndGiven(new TestParameters())
+                .AndGiven(new TestEntity(1))
+                .AndGiven(new Result<TestEntity>(true, "success"))
+            .With(arrangement => new TestOperator(arrangement.GetThe<TestEntity>()))
+            .With<Func<TestOperator, TestParameters, Task<TestEntity>>>((testOperator, testParameters) => testOperator.Execute(testParameters))
+            .WithA<IOperationResultHandler<TestEntity, TestParameters>>()
+                .ThatDoes<Result<TestEntity>>(arrangement => operationResultHandler =>
+                    operationResultHandler.Handle(arrangement.GetThe<TestEntity>(), arrangement.GetThe<TestParameters>()))
+                .AndReturns(arrangement => arrangement.GetThe<Result<TestEntity>>())
+            .WhenItAsync(action => action.Sut.HandleAsync(action.GetThe<TestParameters>()))
+            .ThenTheResultShouldBe(arrangement => arrangement.GetThe<Result<TestEntity>>());
 }

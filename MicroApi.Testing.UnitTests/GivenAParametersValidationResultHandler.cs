@@ -1,70 +1,38 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using MicroApi.Testing.UnitTests.TestClasses;
-using Moq;
+using XpressTest;
 using Xunit;
 
 namespace MicroApi.Testing.UnitTests;
 
 public class GivenAParametersValidationResultHandler
 {
-    public class WhenAValidParametersValidationResultIsHandled
-    {
-        [Fact]
-        public async Task ThenTheParametersAreHandled()
-        {
-            var parameters = new TestParameters();
-
-            var validationResult = new ValidationResult(true);
-
-            var parametersHandledResult = new Result<TestEntity>(true, "success");
-
-            var invalidResultHandlerMock = new Mock<IInvalidResultHandler<TestEntity>>();
-
-            var validParametersHandlerMock = new Mock<IValidParametersHandler<TestEntity, TestParameters>>();
-            validParametersHandlerMock
-                .Setup(validationParametersHandler => validationParametersHandler.HandleAsync(parameters))
-                .ReturnsAsync(parametersHandledResult);
-
-            var sut = new ParametersValidationResultHandler<TestEntity, TestParameters>(
-                invalidResultHandlerMock.Object,
-                validParametersHandlerMock.Object
-                );
-
-            var result = await sut.HandleAsync(parameters, validationResult);
-
-            Assert.Equal(parametersHandledResult, result);
-        }
-    }
-
-    public class WhenAnInvalidParametersValidationResultIsHandled
-    {
-        [Fact]
-        public async Task ThenTheInvalidResultIsHandled()
-        {
-            var parameters = new TestParameters();
-
-            var invalidPropertyValuesMock = new Mock<IEnumerable<InvalidPropertyValue>>();
-
-            var validationResult = new InvalidResult(invalidPropertyValuesMock.Object);
-
-            var parametersHandledResult = new Result<TestEntity>(false, "invalid");
-
-            var invalidResultHandlerMock = new Mock<IInvalidResultHandler<TestEntity>>();
-            invalidResultHandlerMock
-                .Setup(validationParametersHandler => validationParametersHandler.Handle(validationResult))
-                .Returns(parametersHandledResult);
-
-            var validParametersHandlerMock = new Mock<IValidParametersHandler<TestEntity, TestParameters>>();
-
-            var sut = new ParametersValidationResultHandler<TestEntity, TestParameters>(
-                invalidResultHandlerMock.Object,
-                validParametersHandlerMock.Object
-            );
-
-            var result = await sut.HandleAsync(parameters, validationResult);
-
-            Assert.Equal(parametersHandledResult, result);
-        }
-    }
+    [Fact]
+    public void WhenAValidParametersValidationResultIsHandledThenTheParametersAreHandled() =>
+        GivenA<ParametersValidationResultHandler<TestEntity, TestParameters>>
+                .AndGiven(new TestParameters())
+                .AndGiven(new ValidationResult(true))
+                .AndGiven(new Result<TestEntity>(true, "success"))
+            .WithA<IInvalidResultHandler<TestEntity>>()
+            .WithA<IValidParametersHandler<TestEntity, TestParameters>>()
+                .ThatDoesAsync<Result<TestEntity>>(arrangement => validParametersHandler => validParametersHandler.HandleAsync(arrangement.GetThe<TestParameters>()))
+                .AndReturns(arrangement => arrangement.GetThe<Result<TestEntity>>())
+            .WhenItAsync(action =>
+                action.Sut.HandleAsync(action.GetThe<TestParameters>(), action.GetThe<ValidationResult>()))
+            .ThenTheResultShouldBe(arrangement => arrangement.GetThe<Result<TestEntity>>());
+    
+    [Fact]
+    public void WhenAnInvalidParametersValidationResultIsHandledThenTheInvalidResultIsHandled() =>
+        GivenA<ParametersValidationResultHandler<TestEntity, TestParameters>>
+            .AndGiven(new TestParameters())
+            .AndGivenA<IEnumerable<InvalidPropertyValue>>()
+            .AndGiven(arrangement => new InvalidResult(arrangement.GetTheMockObject<IEnumerable<InvalidPropertyValue>>()))
+            .AndGiven(new Result<TestEntity>(false, "invalid"))
+            .WithA<IInvalidResultHandler<TestEntity>>()
+                .ThatDoes<Result<TestEntity>>(arrangement => validationParametersHandler => validationParametersHandler.Handle(arrangement.GetThe<InvalidResult>()))
+                .AndReturns(arrangement => arrangement.GetThe<Result<TestEntity>>())
+            .WithA<IValidParametersHandler<TestEntity, TestParameters>>()
+            .WhenItAsync(action =>
+                action.Sut.HandleAsync(action.GetThe<TestParameters>(), action.GetThe<ValidationResult>()))
+            .ThenTheResultShouldBe(arrangement => arrangement.GetThe<Result<TestEntity>>());
 }

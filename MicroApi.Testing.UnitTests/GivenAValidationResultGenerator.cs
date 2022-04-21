@@ -1,51 +1,43 @@
 ﻿using System.Collections.Generic;
 using MicroApi.Testing.UnitTests.TestClasses;
-using Moq;
+using XpressTest;
 using Xunit;
 
 namespace MicroApi.Testing.UnitTests;
 
 public class GivenAValidationResultGenerator
 {
-    public class WhenAValidationResultIsGeneratedForSomeValidationRuleResults
-    {
-        [Fact]
-        public void ThenTheValidationResultIsBuiltFromTheValidationRuleResults()
-        {
-            var validationResult = new ValidationResult(true);
-
-            var validationRuleResult1 = new ValidationRuleResult(true);
-            var validationRuleResult2 = new ValidationRuleResult(true);
-            var validationRuleResult3 = new ValidationRuleResult(true);
-
-            var validationRuleResultsMock = new List<ValidationRuleResult>
-            {
-                validationRuleResult1,
-                validationRuleResult2,
-                validationRuleResult3
-            };
-
-            var validationResultBuilderMock = new Mock<IValidationResultBuilder>();
-            validationResultBuilderMock
-                .Setup(validationResultBuilder => validationResultBuilder.Build())
-                .Returns(validationResult);
-
-            var validationResultBuilderCreatorMock = new Mock<IValidationResultBuilderCreator>();
-            validationResultBuilderCreatorMock
-                .Setup(validationResultBuilderCreator => validationResultBuilderCreator.Create())
-                .Returns(validationResultBuilderMock.Object);
-
-            var sut = new ValidationResultGenerator<TestParameters>(
-                validationResultBuilderCreatorMock.Object
-                );
-
-            var result = sut.Generate(validationRuleResultsMock);
-
-            validationResultBuilderMock.Verify(validationResultBuilder => validationResultBuilder.Add(validationRuleResult1), Times.Once);
-            validationResultBuilderMock.Verify(validationResultBuilder => validationResultBuilder.Add(validationRuleResult2), Times.Once);
-            validationResultBuilderMock.Verify(validationResultBuilder => validationResultBuilder.Add(validationRuleResult3), Times.Once);
-
-            Assert.Equal(validationResult, result);
-        }
-    }
+    [Fact]
+    public void WhenAValidationResultIsGeneratedForSomeValidationRuleResultsThenTheValidationResultIsBuiltFromTheValidationRuleResults() =>
+        GivenA<ValidationResultGenerator<TestParameters>>
+                .AndGiven(new ValidationResult(true))
+                .AndGiven(new ValidationRuleResult(true), "ValidationRuleResult1")
+                .AndGiven(new ValidationRuleResult(true), "ValidationRuleResult2")
+                .AndGiven(new ValidationRuleResult(true), "ValidationRuleResult3")
+                .AndGiven(arrangement => new List<ValidationRuleResult>
+                {
+                    arrangement.GetThe<ValidationRuleResult>("ValidationRuleResult1"),
+                    arrangement.GetThe<ValidationRuleResult>("ValidationRuleResult2"),
+                    arrangement.GetThe<ValidationRuleResult>("ValidationRuleResult3")
+                })
+                .AndGivenA<IValidationResultBuilder>()
+                    .ThatDoes(validationResultBuilder => validationResultBuilder.Build())
+                    .AndReturns(arrangement => arrangement.GetThe<ValidationResult>())
+            .WithA<IValidationResultBuilderCreator>()
+                .ThatDoes(validationResultBuilderCreator => validationResultBuilderCreator.Create())
+                .AndReturnsTheMock<IValidationResultBuilder>()
+            .WhenIt(action => action.Sut.Generate(action.GetThe<List<ValidationRuleResult>>()))
+            .ThenThe<IValidationResultBuilder>()
+                .Should(arrangement => validationResultBuilder =>
+                    validationResultBuilder.Add(arrangement.GetThe<ValidationRuleResult>("ValidationRuleResult1")))
+                .Once()
+            .ThenThe<IValidationResultBuilder>()
+                .Should(arrangement => validationResultBuilder =>
+                    validationResultBuilder.Add(arrangement.GetThe<ValidationRuleResult>("ValidationRuleResult2")))
+                .Once()
+            .ThenThe<IValidationResultBuilder>()
+                .Should(arrangement => validationResultBuilder =>
+                    validationResultBuilder.Add(arrangement.GetThe<ValidationRuleResult>("ValidationRuleResult3")))
+                .Once()
+            .ThenTheResultShouldBe(arrangement => arrangement.GetThe<ValidationResult>());
 }

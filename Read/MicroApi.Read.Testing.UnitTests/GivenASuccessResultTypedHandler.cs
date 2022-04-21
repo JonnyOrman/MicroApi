@@ -1,28 +1,23 @@
 ﻿using MicroApi.Read.Testing.UnitTests.TestClasses;
+using XpressTest;
 using Xunit;
 
 namespace MicroApi.Read.Testing.UnitTests;
 
 public class GivenASuccessResultTypedHandler
 {
-    public class WhenASuccessResultIsHandled
-    {
-        [Fact]
-        public void ThenItReturnsAnOkObjectResult()
-        {
-            var entity = new TestEntity("abc");
+    [Fact]
+    public void WhenASuccessResultIsHandledThenItReturnsAnOkObjectResult() =>
+        GivenA<SuccessResultTypedHandler<TestEntity>>
+                .AndGiven(new TestEntity("abc"))
+                .AndGiven(arrangement => new SuccessResult<TestEntity>(arrangement.GetThe<TestEntity>()))
+            .WhenIt(arrangement => arrangement.Sut.Handle(arrangement.GetThe<SuccessResult<TestEntity>>()))
+            .Then(assertion =>
+            {
+                Assert.Equal("Microsoft.AspNetCore.Http.Result.OkObjectResult", assertion.Result.GetType().FullName);
 
-            var successResult = new SuccessResult<TestEntity>(entity);
-
-            var sut = new SuccessResultTypedHandler<TestEntity>();
-
-            var result = sut.Handle(successResult);
-
-            Assert.Equal("Microsoft.AspNetCore.Http.Result.OkObjectResult", result.GetType().FullName);
-
-            var valueProperty = result.GetType().GetProperty("Value");
-            var value = valueProperty.GetValue(result);
-            Assert.Equal(successResult, value);
-        }
-    }
+                var valueProperty = assertion.Result.GetType().GetProperty("Value");
+                var value = valueProperty.GetValue(assertion.Result);
+                Assert.Equal(assertion.GetThe<SuccessResult<TestEntity>>(), value);
+            });
 }

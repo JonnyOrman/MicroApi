@@ -1,37 +1,23 @@
 ﻿using MicroApi.Testing.UnitTests.TestClasses;
-using Moq;
+using XpressTest;
 using Xunit;
 
 namespace MicroApi.Testing.UnitTests;
 
 public class GivenAnOperationFailedResultHandler
 {
-    public class WhenAFailedOperationResultIsHandled
-    {
-        [Fact]
-        public void ThenItRunsTheEventsAndGeneratesTheResult()
-        {
-            var parameters = new TestParameters();
-
-            var generatedResult = new Result<TestEntity>(true, "successful");
-
-            var operationFailedEventsRunnerMock = new Mock<IOperationFailedEventsRunner<TestParameters>>();
-
-            var operationFailedResultGeneratorMock = new Mock<IOperationFailedResultGenerator<TestEntity, TestParameters>>();
-            operationFailedResultGeneratorMock
-                .Setup(operationFailedResultGenerator => operationFailedResultGenerator.Generate(parameters))
-                .Returns(generatedResult);
-
-            var sut = new OperationFailedResultHandler<TestEntity, TestParameters>(
-                operationFailedEventsRunnerMock.Object,
-                operationFailedResultGeneratorMock.Object
-                );
-
-            var result = sut.Handle(parameters);
-
-            operationFailedEventsRunnerMock.Verify(operationFailedEventsRunner => operationFailedEventsRunner.Run(parameters), Times.Once);
-
-            Assert.Equal(generatedResult, result);
-        }
-    }
+    [Fact]
+    public void WhenAFailedOperationResultIsHandledThenItRunsTheEventsAndGeneratesTheResult() =>
+        GivenA<OperationFailedResultHandler<TestEntity, TestParameters>>
+                .AndGiven(new TestParameters())
+                .AndGiven(new Result<TestEntity>(true, "successful"))
+            .WithA<IOperationFailedEventsRunner<TestParameters>>()
+            .WithA<IOperationFailedResultGenerator<TestEntity, TestParameters>>()
+                .ThatDoes<Result<TestEntity>>(arrangement => operationFailedResultGenerator => operationFailedResultGenerator.Generate(arrangement.GetThe<TestParameters>()))
+                .AndReturns(arrangement => arrangement.GetThe<Result<TestEntity>>())
+            .WhenIt(action => action.Sut.Handle(action.GetThe<TestParameters>()))
+            .ThenThe<IOperationFailedEventsRunner<TestParameters>>()
+                .Should(arrangement => runner => runner.Run(arrangement.GetThe<TestParameters>()))
+                .Once()
+            .ThenTheResultShouldBe(arrangement => arrangement.GetThe<Result<TestEntity>>());
 }

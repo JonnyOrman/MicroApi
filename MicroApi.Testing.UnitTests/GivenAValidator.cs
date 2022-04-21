@@ -1,42 +1,26 @@
 ﻿using System.Collections.Generic;
 using MicroApi.Testing.UnitTests.TestClasses;
-using Moq;
+using XpressTest;
 using Xunit;
 
 namespace MicroApi.Testing.UnitTests;
 
 public class GivenAValidator
 {
-    public class WhenItValidatesAValue
-    {
-        [Fact]
-        public void ThenItGeneratesAValidationResultFromTheRuleResults()
-        {
-            var validationValue = new TestParameters();
-
-            var validationRuleResultsMock = new Mock<IEnumerable<ValidationRuleResult>>();
-
-            var validationResult = new ValidationResult(true);
-            
-            var validationRuleResultsCalculatorMock = new Mock<IValidationRuleResultsCalculator<TestParameters>>();
-            validationRuleResultsCalculatorMock
-                .Setup(validationRuleResultsCalculator => validationRuleResultsCalculator.Calculate(validationValue))
-                .Returns(validationRuleResultsMock.Object);
-
-            var validationResultGeneratorMock = new Mock<IValidationResultGenerator<TestParameters>>();
-            validationResultGeneratorMock
-                .Setup(validationResultGenerator =>
-                    validationResultGenerator.Generate(validationRuleResultsMock.Object))
-                .Returns(validationResult);
-
-            var sut = new Validator<TestParameters>(
-                validationRuleResultsCalculatorMock.Object,
-                validationResultGeneratorMock.Object
-                );
-
-            var result = sut.Validate(validationValue);
-
-            Assert.Equal(validationResult, result);
-        }
-    }
+    [Fact]
+    public void WhenItValidatesAValueThenItGeneratesAValidationResultFromTheRuleResults() =>
+        GivenA<Validator<TestParameters>>
+                .AndGiven(new TestParameters())
+                .AndGivenA<IEnumerable<ValidationRuleResult>>()
+                .AndGiven(new ValidationResult(true))
+            .WithA<IValidationRuleResultsCalculator<TestParameters>>()
+                .ThatDoes<IEnumerable<ValidationRuleResult>>(arrangement => validationRuleResultsCalculator =>
+                    validationRuleResultsCalculator.Calculate(arrangement.GetThe<TestParameters>()))
+                .AndReturns(arrangement => arrangement.GetTheMockObject<IEnumerable<ValidationRuleResult>>())
+            .WithA<IValidationResultGenerator<TestParameters>>()
+                .ThatDoes<ValidationResult>(arrangement => validationResultGenerator =>
+                    validationResultGenerator.Generate(arrangement.GetTheMockObject<IEnumerable<ValidationRuleResult>>()))
+                .AndReturns(arrangement => arrangement.GetThe<ValidationResult>())
+            .WhenIt(action => action.Sut.Validate(action.GetThe<TestParameters>()))
+            .ThenTheResultShouldBe(arrangement => arrangement.GetThe<ValidationResult>());
 }

@@ -1,44 +1,32 @@
 using MicroApi.Testing.UnitTests.TestClasses;
 using Microsoft.AspNetCore.Http;
-using Moq;
-using System.Threading.Tasks;
+using XpressTest;
 using Xunit;
 
 namespace MicroApi.Testing.UnitTests;
 
 public class GivenARequestHandler
 {
-    public class WhenItHandlesARequest
-    {
-        public async Task ThenItProcessesTheParametersAndHandlesTheResult()
-        {
-            var parameters = new TestParameters();
-
-            var parametersProcessorResult = new Result<TestEntity>(true, "message");
-
-            var handledResultMock = new Mock<IResult>();
-
-            var parametersProcessorMock = new Mock<IParametersProcessor<TestEntity, TestParameters>>();
-            parametersProcessorMock
-                .Setup(parametersProcessor => parametersProcessor.ProcessAsync(parameters))
-                .ReturnsAsync(parametersProcessorResult);
-
-            var resultHandlerMock = new Mock<IResultHandler<TestEntity>>();
-            resultHandlerMock
-                .Setup(resultHandler => resultHandler.Handle(parametersProcessorResult))
-                .Returns(handledResultMock.Object);
-
-            var sut = new RequestHandler<TestEntity, TestParameters>(
-                parametersProcessorMock.Object,
-                resultHandlerMock.Object
-            );
-
-            var result = await sut.HandleAsync(parameters);
-
-            parametersProcessorMock.Verify(parametersProcessor => parametersProcessor.ProcessAsync(parameters), Times.Once);
-            resultHandlerMock.Verify(resultHandler => resultHandler.Handle(parametersProcessorResult), Times.Once);
-
-            Assert.Equal(handledResultMock.Object, result);
-        }
-    }
+    [Fact]
+    public void WhenItHandlesARequestThenItProcessesTheParametersAndHandlesTheResult() =>
+        GivenA<RequestHandler<TestEntity, TestParameters>>
+                .AndGiven(new TestParameters())
+                .AndGiven(new Result<TestEntity>(true, "message"))
+                .AndGivenA<IResult>()
+            .WithA<IParametersProcessor<TestEntity, TestParameters>>()
+                .ThatDoesAsync<Result<TestEntity>>(arrangement => parametersProcessor =>
+                parametersProcessor.ProcessAsync(arrangement.GetThe<TestParameters>()))
+                .AndReturns(arrangement => arrangement.GetThe<Result<TestEntity>>())
+            .WithA<IResultHandler<TestEntity>>()
+                .ThatDoes<IResult>(arrangement =>
+                resultHandler => resultHandler.Handle(arrangement.GetThe<Result<TestEntity>>()))
+                .AndReturns(arrangement => arrangement.GetTheMockObject<IResult>())
+            .WhenItAsync(action => action.Sut.HandleAsync(action.GetThe<TestParameters>()))
+            .ThenTheAsync<IParametersProcessor<TestEntity, TestParameters>>()
+                .Should(arrangement => parametersProcessor =>
+                parametersProcessor.ProcessAsync(arrangement.GetThe<TestParameters>()))
+                .Once()
+            .ThenThe<IResultHandler<TestEntity>>()
+                .Should(arrangement => resultHandler => resultHandler.Handle(arrangement.GetThe<Result<TestEntity>>()))
+                .Once();
 }

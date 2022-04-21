@@ -1,33 +1,21 @@
 using MicroApi.Testing.UnitTests.TestClasses;
 using Microsoft.AspNetCore.Http;
-using Moq;
+using XpressTest;
 using Xunit;
 
 namespace MicroApi.Testing.UnitTests;
 
 public class GivenAResultTypeHandler
 {
-    public class WhenAMatchingResultTypeIsHandled
-    {
-        [Fact]
-        public void ThenItIsSuccessfullyHandled()
-        {
-            var testResult = new TestResult(true, "successful");
-
-            var resultMock = new Mock<IResult>();
-
-            var typedResultTypeHandlerMock = new Mock<ITypedResultTypeHandler<TestResult>>();
-            typedResultTypeHandlerMock
-                .Setup(typedResultTypeHandler => typedResultTypeHandler.Handle(testResult))
-                .Returns(resultMock.Object);
-
-            var sut = new ResultTypeHandler<TestEntity, TestResult>(
-                typedResultTypeHandlerMock.Object
-            );
-
-            var result = sut.Handle(testResult);
-
-            Assert.Equal(resultMock.Object, result);
-        }
-    }
+    [Fact]
+    public void WhenAMatchingResultTypeIsHandledThenItIsSuccessfullyHandled() =>
+        GivenA<ResultTypeHandler<TestEntity, TestResult>>
+                .AndGiven(new TestResult(true, "successful"))
+                .AndGivenA<IResult>()
+            .WithA<ITypedResultTypeHandler<TestResult>>()
+                .ThatDoes<IResult>(arrangement =>
+                typedResultTypeHandler => typedResultTypeHandler.Handle(arrangement.GetThe<TestResult>()))
+                .AndReturns(arrangement => arrangement.GetTheMockObject<IResult>())
+            .WhenIt(action => action.Sut.Handle(action.GetThe<TestResult>()))
+            .ThenTheResultShouldBe(arrangement => arrangement.GetTheMockObject<IResult>());
 }

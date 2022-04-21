@@ -1,19 +1,16 @@
-﻿using Xunit;
+﻿using XpressTest;
+using Xunit;
 
 namespace MicroApi.Testing.UnitTests;
 
 public class GivenAValidationResultBuilderCreator
 {
-    public class WhenAValidationResultBuilderIsCreated
-    {
-        [Fact]
-        public void ThenItCreatesAValidationResultBuilder()
-        {
-            var sut = new ValidationResultBuilderCreator();
-
-            var result = sut.Create();
-
-            Assert.NotNull(result);
-        }
-    }
+    [Fact]
+    public void WhenAValidationResultBuilderIsCreatedThenItCreatesAValidationResultBuilder() =>
+        GivenA<ValidationResultBuilderCreator>
+            .WhenIt(sut => sut.Create())
+            .Then(assertion =>
+            {
+                Assert.NotNull(assertion.Result);
+            });
 }

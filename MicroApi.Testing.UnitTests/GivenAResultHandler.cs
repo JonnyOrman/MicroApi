@@ -1,36 +1,25 @@
 using MicroApi.Testing.UnitTests.TestClasses;
 using Microsoft.AspNetCore.Http;
-using Moq;
+using XpressTest;
 using Xunit;
 
 namespace MicroApi.Testing.UnitTests;
 
 public class GivenAResultHandler
 {
-    public class WhenAResultIsHandled
-    {
-        [Fact]
-        public void ThenTheHandlerForTheResultTypeIsResolvedAndUsedToHandleTheResult()
-        {
-            var testEntityResult = new Result<TestEntity>(true, "successful");
-
-            var resultMock = new Mock<IResult>();
-
-            var resultTypeHandlerMock = new Mock<IResultTypeHandler<TestEntity>>();
-            resultTypeHandlerMock
-                .Setup(resultTypeHandler => resultTypeHandler.Handle(testEntityResult))
-                .Returns(resultMock.Object);
-
-            var resultTypeHandlerResolverMock = new Mock<IResultTypeHandlerResolver<TestEntity>>();
-            resultTypeHandlerResolverMock
-                .Setup(resultTypeHandlerResolver => resultTypeHandlerResolver.Resolve(testEntityResult))
-                .Returns(resultTypeHandlerMock.Object);
-
-            var sut = new ResultHandler<TestEntity>(resultTypeHandlerResolverMock.Object);
-
-            var result = sut.Handle(testEntityResult);
-
-            Assert.Equal(resultMock.Object, result);
-        }
-    }
+    [Fact]
+    public void WhenAResultIsHandledThenTheHandlerForTheResultTypeIsResolvedAndUsedToHandleTheResult() =>
+        GivenA<ResultHandler<TestEntity>>
+                .AndGiven(new Result<TestEntity>(true, "successful"))
+                .AndGivenA<IResult>()
+                .AndGivenA<IResultTypeHandler<TestEntity>>()
+                    .ThatDoes<IResult>(arrangement =>
+                resultTypeHandler => resultTypeHandler.Handle(arrangement.GetThe<Result<TestEntity>>()))
+                    .AndReturns(arrangement => arrangement.GetTheMockObject<IResult>())
+            .WithA<IResultTypeHandlerResolver<TestEntity>>()
+                .ThatDoes<IResultTypeHandler<TestEntity>>(arrangement => resultTypeHandlerResolver =>
+                resultTypeHandlerResolver.Resolve(arrangement.GetThe<Result<TestEntity>>()))
+                .AndReturns(arrangement => arrangement.GetTheMockObject<IResultTypeHandler<TestEntity>>())
+            .WhenIt(action => action.Sut.Handle(action.GetThe<Result<TestEntity>>()))
+            .ThenTheResultShouldBe(arrangement => arrangement.GetTheMockObject<IResult>());
 }
